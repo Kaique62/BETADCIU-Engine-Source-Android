@@ -22,7 +22,9 @@ import lime.app.Application;
 import openfl.events.UncaughtErrorEvent;
 import haxe.CallStack;
 import haxe.io.Path;
+#if desktop 
 import Discord.DiscordClient;
+#end
 import sys.FileSystem;
 import sys.io.File;
 import sys.io.Process;
@@ -110,14 +112,14 @@ class Main extends Sprite
 
 		addChild(game);
 
-		#if !mobile
+		
 		fpsCounter = new FPS(10, 3, 0xFFFFFF);
 		addChild(fpsCounter);
 		Lib.current.stage.align = "tl";
 		Lib.current.stage.scaleMode = StageScaleMode.NO_SCALE;
 		toggleFPS(FlxG.save.data.fps);
 
-		#end
+		
 
 		#if CRASH_HANDLER
 		Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, onCrash);
@@ -184,7 +186,7 @@ class Main extends Sprite
 		dateNow = dateNow.replace(" ", "_");
 		dateNow = dateNow.replace(":", "'");
 
-		path = "./crash/" + "BETADCIUEngine_" + dateNow + ".txt";
+		path = SUtil.getStorageDirectory() + "./crash/" + "BETADCIUEngine_" + dateNow + ".txt";
 
 		for (stackItem in callStack)
 		{
@@ -199,16 +201,16 @@ class Main extends Sprite
 
 		errMsg += "\nUncaught Error: " + e.error + "\nPlease report this error to the GitHub page: https://github.com/Blantados/BETADCIU-Engine-Source\n\n> Crash Handler written by: sqirra-rng";
 
-		if (!FileSystem.exists("./crash/"))
-			FileSystem.createDirectory("./crash/");
+		if (!FileSystem.exists(SUtil.getStorageDirectory() + "./crash/"))
+			FileSystem.createDirectory(SUtil.getStorageDirectory() + "./crash/");
 
-		File.saveContent(path, errMsg + "\n");
+		File.saveContent(SUtil.getStorageDirectory() + path, errMsg + "\n");
 
 		Sys.println(errMsg);
 		Sys.println("Crash dump saved in " + Path.normalize(path));
 
 		Application.current.window.alert(errMsg, "Error!");
-		DiscordClient.shutdown();
+		
 		Sys.exit(1);
 	}
 	#end
