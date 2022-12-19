@@ -10,11 +10,11 @@ import flash.display.BitmapData;
 import flixel.graphics.FlxGraphic;
 import haxe.xml.Fast;
 
-#if desktop
+
 import Sys;
 import sys.FileSystem;
 import sys.io.File;
-#end
+
 
 import openfl.net.FileReference;
 import openfl.events.Event;
@@ -145,7 +145,7 @@ class Character extends FlxSprite
 				var path:String = Paths.jsonNew(characterPath);
 				
 				#if MODS_ALLOWED
-					if (FileSystem.exists(Paths.modFolders('characters/'+curCharacter+'.json')))
+					if (FileSystem.exists(SUtil.getStorageDirectory() + Paths.modFolders('characters/'+curCharacter+'.json')))
 						path = Paths.modFolders('characters/'+curCharacter+'.json');
 				#end
 			
