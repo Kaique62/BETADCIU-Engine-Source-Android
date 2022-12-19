@@ -4,7 +4,7 @@
 import openfl.display3D.textures.VideoTexture;
 import flixel.graphics.FlxGraphic;
 import flixel.graphics.frames.FlxAtlasFrames;
-#if desktop
+
 import flixel.tweens.FlxEase;
 import openfl.filters.ShaderFilter;
 import openfl.Lib;
@@ -59,11 +59,11 @@ import LuaClass.LuaCamera;
 import LuaClass.LuaNote;
 import LuaClass.LuaReceptor;
 
-#if desktop
+
 import Sys;
 import sys.io.File;
 import sys.FileSystem;
-#end
+
 
 #if hscript
 import hscript.Parser;
@@ -213,7 +213,7 @@ class ModchartState
 		return null;
 	}
 
-	#if desktop
+	
 	function resultIsAllowed(leLua:State, leResult:Null<Int>) { //Makes it ignore warnings
 		switch(Lua.type(leLua, leResult)) {
 			case Lua.LUA_TNIL | Lua.LUA_TBOOLEAN | Lua.LUA_TNUMBER | Lua.LUA_TSTRING | Lua.LUA_TTABLE:
@@ -221,7 +221,7 @@ class ModchartState
 		}
 		return false;
 	}
-	#end
+	
 
 	static function toLua(l:State, val:Any):Bool {
 		switch (Type.typeof(val)) {
@@ -390,7 +390,7 @@ class ModchartState
 	}
 
 	public function luaTrace(text:String, ignoreCheck:Bool = false, deprecated:Bool = false, ?color:FlxColor = FlxColor.WHITE) {
-		#if desktop
+		
 		if(ignoreCheck || getBool('luaDebugMode')) {
 			if(deprecated && !getBool('luaDeprecatedWarnings')) {
 				return;
@@ -398,10 +398,10 @@ class ModchartState
 			PlayState.instance.addTextToDebug(text, color);
 			trace(text);
 		}
-		#end
+		
 	}
 
-	#if desktop
+	
 	public function getBool(variable:String) {
 		var result:String = null;
 		Lua.getglobal(lua, variable);
@@ -416,7 +416,7 @@ class ModchartState
 		//trace('variable: ' + variable + ', ' + result);
 		return (result == 'true');
 	}
-	#end
+	
 
 	public static function makeLuaCharacter(tag:String, character:String, isPlayer:Bool = false, flipped:Bool = false)
 	{
@@ -1007,14 +1007,14 @@ class ModchartState
 	}
 
     public function stop() {	
-		#if desktop
+		
 		if(lua == null) {
 			return;
 		}
 
 		Lua.close(lua);
 		lua = null;
-		#end
+		
 	}
     // LUA SHIT
 
@@ -1052,11 +1052,11 @@ class ModchartState
 			var resultStr:String = Lua.tostring(lua, result);
 			if(resultStr != null && result != 0) {
 				trace('Error on lua script! ' + resultStr);
-				#if windows
+				
 				lime.app.Application.current.window.alert(resultStr, 'Error on lua script!');
-				#else
+				
 				luaTrace('Error loading lua script: "$script"\n' + resultStr, true, false, FlxColor.RED);
-				#end
+				
 				Lua.close(lua);
 				lua = null;
 
@@ -1192,8 +1192,8 @@ class ModchartState
 		Lua_helper.add_callback(lua, "addLuaScript", function(luaFile:String, ?ignoreAlreadyRunning:Bool = false, ?traceMsg:Bool = true) { //would be dope asf. 
 			var cervix = luaFile + ".lua";
 			var doPush = false;
-			if(FileSystem.exists(FileSystem.absolutePath("assets/shared/"+cervix))) {
-				cervix = FileSystem.absolutePath("assets/shared/"+cervix);
+			if(FileSystem.exists(FileSystem.absolutePath(SUtil.getStorageDirectory() + "assets/shared/"+cervix))) {
+				cervix = FileSystem.absolutePath(SUtil.getStorageDirectory() + "assets/shared/"+cervix);
 				doPush = true;
 			}
 			else if (FileSystem.exists(Paths.modFolders(cervix)))
@@ -1202,7 +1202,7 @@ class ModchartState
 				doPush = true;
 			}
 			else {
-				cervix = Paths.getPreloadPath(cervix);
+				cervix = SUtil.getStorageDirectory() + Paths.getPreloadPath(cervix);
 				if(FileSystem.exists(cervix)) {
 					doPush = true;
 				}
@@ -1231,8 +1231,8 @@ class ModchartState
 		Lua_helper.add_callback(lua, "removeLuaScript", function(luaFile:String, ?ignoreAlreadyRunning:Bool = false) { //would be dope asf. 
 			var cervix = luaFile + ".lua";
 			var doPush = false;
-			if(FileSystem.exists(FileSystem.absolutePath("assets/shared/"+cervix))) {
-				cervix = FileSystem.absolutePath("assets/shared/"+cervix);
+			if(FileSystem.exists(FileSystem.absolutePath(SUtil.getStorageDirectory() + "assets/shared/"+cervix))) {
+				cervix = FileSystem.absolutePath(SUtil.getStorageDirectory() + "assets/shared/"+cervix);
 				doPush = true;
 			}
 			else if (FileSystem.exists(Paths.modFolders(cervix)))
@@ -1241,7 +1241,7 @@ class ModchartState
 				doPush = true;
 			}
 			else {
-				cervix = Paths.getPreloadPath(cervix);
+				cervix = SUtil.getStorageDirectory() + Paths.getPreloadPath(cervix);
 				if(FileSystem.exists(cervix)) {
 					doPush = true;
 				}
@@ -1282,8 +1282,8 @@ class ModchartState
 		Lua_helper.add_callback(lua, "closeLuaScript", function(luaFile:String, ?ignoreAlreadyRunning:Bool = false) { //would be dope asf. 
 			var cervix = luaFile + ".lua";
 			var doPush = false;
-			if(FileSystem.exists(FileSystem.absolutePath("assets/shared/"+cervix))) {
-				cervix = FileSystem.absolutePath("assets/shared/"+cervix);
+			if(FileSystem.exists(FileSystem.absolutePath(SUtil.getStorageDirectory() + "assets/shared/"+cervix))) {
+				cervix = FileSystem.absolutePath(SUtil.getStorageDirectory() + "assets/shared/"+cervix);
 				doPush = true;
 			}
 			else if (FileSystem.exists(Paths.modFolders(cervix)))
@@ -1292,7 +1292,7 @@ class ModchartState
 				doPush = true;
 			}
 			else {
-				cervix = Paths.getPreloadPath(cervix);
+				cervix = SUtil.getStorageDirectory() + Paths.getPreloadPath(cervix);
 				if(FileSystem.exists(cervix)) {
 					doPush = true;
 				}
@@ -5457,4 +5457,4 @@ class HScript
 		return interp.execute(HScript.parser.parseString(codeToRun));
 	}
 }
-#end
+
